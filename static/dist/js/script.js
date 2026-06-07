@@ -38,21 +38,25 @@ function renderHistoryList() {
         item.className = "w-full text-left p-2 text-xs text-gray-400 hover:bg-gray-800 rounded truncate";
         item.innerText = chat.prompt;
 
-        // LOGIQUE DE CHARGEMENT :
+        // LOGIQUE DE CHARGEMENT
         item.onclick = () => {
             // 1. Vider l'écran actuel
             gptOutput.innerHTML = "";
 
-            // 2. Afficher le prompt original et la réponse sauvegardée
+            // 2. Afficher le prompt original
             addToLog(chat.prompt);
 
+            // 3. RECUPERER ET CONVERTIR LE TEXTE SAUVEGARDE
             const responseBlock = _cloneAnswerBlock();
-            responseBlock.innerHTML = chat.response; // Affiche le HTML sauvegardé
 
-            // 3. Appliquer le highlight aux codes si nécessaire
+            // On utilise le convertisseur pour transformer le Markdown sauvegardé en vrai HTML
+            const converter = new showdown.Converter();
+            responseBlock.innerHTML = converter.makeHtml(chat.response);
+
+            // 4. Appliquer le highlight aux codes (indispensable pour les blocs ```html)
             hljs.highlightAll();
 
-            // 4. Fermer la sidebar sur mobile après le clic
+            // 5. Fermer la sidebar sur mobile
             const sidebar = document.querySelector("#sidebar");
             if (window.innerWidth < 768) {
                 sidebar.classList.add("hidden");
