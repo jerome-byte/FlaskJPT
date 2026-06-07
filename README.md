@@ -1,5 +1,5 @@
-FlaskGPT : Interface de Chat avec Gemini AI
-FlaskGPT est une application web interactive permettant de discuter en temps réel avec le modèle Gemini AI de Google. Ce projet utilise une architecture moderne basée sur Poetry pour la gestion stricte des dépendances, assurant ainsi un environnement de développement propre et reproductible.
+FlaskJPT : Interface de Chat avec Gemini AI
+FlaskJPT est une application web interactive permettant de discuter en temps réel avec le modèle Gemini AI de Google. Ce projet utilise une architecture moderne basée sur Poetry pour la gestion stricte des dépendances, assurant ainsi un environnement de développement propre et reproductible.
 
  Stack Technique
 Backend : Python 3, Flask, Gunicorn.
