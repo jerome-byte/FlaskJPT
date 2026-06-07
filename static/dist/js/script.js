@@ -18,7 +18,7 @@ function addToLog(message) {
     return infoBlock;
 }
 
-// --- NOUVELLES FONCTIONS POUR L'HISTORIQUE ---
+// NOUVELLES FONCTIONS POUR L'HISTORIQUE 
 
 function saveChatHistory(prompt, response) {
     let history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
@@ -41,7 +41,7 @@ function renderHistoryList() {
     });
 }
 
-// ----------------------------------------------
+
 
 async function fetchPromptResponse(prompt) {
     const response = await fetch("/prompt", {
