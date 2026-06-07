@@ -1,5 +1,4 @@
 import os
-from typing import Generator
 from flask import Flask, Response, render_template, request
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -8,8 +7,9 @@ load_dotenv()
 
 app = Flask(__name__)
 
-# Configuration de la clé API Gemini
+# 1. INITIALISATION GLOBALE : On crée le modèle UNE SEULE FOIS au démarrage
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-3.5-flash')  # Utilisation d'un modèle stable
 
 
 @app.route('/')
@@ -17,46 +17,31 @@ def home():
     return render_template('index.html')
 
 
-# Dans app.py, assurez-vous que ceci est bien en place
 @app.route('/prompt', methods=['POST'])
 def prompt():
     data = request.get_json()
-    if not data or 'message' not in data:
+    user_input = data.get('message', [])  # On attend juste le dernier message
+
+    if not user_input:
         return "Erreur : données manquantes", 400
 
-    # 'message' contient la liste complète de l'historique
-    messages = data['message']
+    # On utilise le streaming directement
+    return Response(event_stream(user_input), mimetype='text/plain')
 
-    # On convertit cette liste en format que Gemini comprend
-    # Note : Le dernier message est le nouveau prompt de l'utilisateur
-    conversation = build_conversation_dict(messages=messages)
 
-    # On envoie au générateur
-    return Response(event_stream(conversation), mimetype='text/plain')
+def event_stream(user_input):
+    try:
+        # 2. APPEL DIRECT : On envoie juste le texte.
+        # Si vous n'avez pas besoin de gérer un historique complexe pour le moment,
+        # cette méthode est la plus légère en mémoire.
+        response = model.generate_content(user_input, stream=True)
 
-def event_stream(conversation: list[dict]) -> Generator[str, None, None]:
-    model = genai.GenerativeModel('gemini-3.5-flash')
-
-    # Conversion correcte
-    history = []
-    for msg in conversation:
-        # On s'assure que le rôle est accepté par Gemini
-        role = 'user' if msg['role'] == 'user' else 'model'
-        history.append({"role": role, "parts": [msg['content']]})
-
-    # Appel au streaming
-    response = model.generate_content(history, stream=True)
-
-    for chunk in response:
-        if chunk.text:
-            yield chunk.text
-
-def build_conversation_dict(messages: list) -> list[dict]:
-    return [
-        {"role": "user" if i % 2 == 0 else "assistant", "content": message}
-        for i, message in enumerate(messages)
-    ]
+        for chunk in response:
+            if chunk.text:
+                yield chunk.text
+    except Exception as e:
+        yield f"\n[Erreur serveur : {str(e)}]"
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1', port=5000)
+    app.run()
