@@ -110,3 +110,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
+// Gestion du menu burger mobile
+document.addEventListener("DOMContentLoaded", () => {
+    const menuToggle = document.querySelector("#menu-toggle");
+    const sidebar = document.querySelector("#sidebar");
+
+    if (menuToggle && sidebar) {
+        menuToggle.addEventListener("click", () => {
+            // Bascule entre l'affichage et le masquage de la barre latérale
+            sidebar.classList.toggle("hidden");
+        });
+    }
+});

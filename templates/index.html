@@ -11,14 +11,16 @@
 </head>
 <body class="flex h-screen overflow-hidden">
 
-<aside class="w-64 bg-gray-900 text-white p-4 flex flex-col h-full flex-shrink-0">
+<button id="menu-toggle" class="md:hidden p-4 text-gray-900 absolute z-50">
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+</button>
+
+<aside id="sidebar" class="hidden md:flex w-64 bg-gray-900 text-white p-4 flex-col h-full flex-shrink-0 absolute md:static z-40">
     <button id="new-chat-btn" class="w-full border border-white/20 p-2 rounded hover:bg-gray-800 transition text-sm text-left">
         + Nouvelle discussion
     </button>
-    <div id="history-list" class="mt-4 flex-1 overflow-y-auto space-y-2">
-        </div>
+    <div id="history-list" class="mt-4 flex-1 overflow-y-auto space-y-2"></div>
 </aside>
-
 <main class="mx-auto max-w-6xl px-4 py-10 flex flex-col flex-1 h-full overflow-y-auto">
     
     <div id="chat-template" class="hidden odd:bg-slate-50 even:bg-slate-200 p-6">
