@@ -30,13 +30,34 @@ function saveChatHistory(prompt, response) {
 function renderHistoryList() {
     const historyList = document.querySelector("#history-list");
     const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
-    
+    const gptOutput = document.querySelector("#gpt-output");
+
     historyList.innerHTML = '';
-    history.forEach((chat, index) => {
+    history.forEach((chat) => {
         const item = document.createElement("button");
         item.className = "w-full text-left p-2 text-xs text-gray-400 hover:bg-gray-800 rounded truncate";
         item.innerText = chat.prompt;
-        item.onclick = () => alert("Chargement de : " + chat.prompt); // Logique de chargement à définir
+
+        // LOGIQUE DE CHARGEMENT :
+        item.onclick = () => {
+            // 1. Vider l'écran actuel
+            gptOutput.innerHTML = "";
+
+            // 2. Afficher le prompt original et la réponse sauvegardée
+            addToLog(chat.prompt);
+
+            const responseBlock = _cloneAnswerBlock();
+            responseBlock.innerHTML = chat.response; // Affiche le HTML sauvegardé
+
+            // 3. Appliquer le highlight aux codes si nécessaire
+            hljs.highlightAll();
+
+            // 4. Fermer la sidebar sur mobile après le clic
+            const sidebar = document.querySelector("#sidebar");
+            if (window.innerWidth < 768) {
+                sidebar.classList.add("hidden");
+            }
+        };
         historyList.appendChild(item);
     });
 }
